@@ -1,0 +1,369 @@
+<?php
+			error_reporting(0);
+			$msgerror = '';
+			$msgsuccess='';
+
+			if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+				if ($_POST['nombreDeLaCompañia'] == "" || $_POST['direccionDeLaCompañia'] == "" || $_POST['nombreDeContacto'] == "" || $_POST['telefono'] == "" || $_POST['Email'] == "" || $_POST['cantidadTotal'] == "" || $_POST['usandoWIFI'] == "" || $_POST['conCableEthernet'] == "" || $_POST['opciones'] == "" || $_POST['extensiones'] == "" || $_POST['bienvenida'] == "" || $_POST['extPrincipal'] == "") { 
+
+					$msgerror = 'Por favor llene los campos';
+				} else {
+
+					$mailto = 'denixonxavier@gmail.com';
+					$mailfrom = 'info@ingetelconnections.com';
+					$mailsubject = 'Documento para solicitud de Servicio';
+					$nombreDeLaCompañia = $_POST['nombreDeLaCompañia'];
+					$direccionDeLaCompañia = $_POST['direccionDeLaCompañia'];
+					$nombreDeContacto = $_POST['nombreDeContacto'];
+					$telefonoDeContacto = $_POST['telefono'];
+					$emailDeContacto = $_POST['Email'];
+					$proveedorActual = $_POST['proveedorActual'];
+					$enviarPorEmailFactura = $_POST['enviarPorEmail'];
+					$cantidadDeComputadoras = $_POST['cantidadTotal'];
+					$compusUsandoWIFI = $_POST['usandoWIFI'];
+					$compusConCableEthernet = $_POST['conCableEthernet'];
+					
+					//Listas de numeros: son 10
+					//Probando llenar en un array los numeros telefonicos
+					//Llenando array de numeros
+					$numerosTelefonicos = array();
+					for ($i=1; $i < 11; $i++) {
+						if ($_POST['numeroTelefonico'.$i] != "") {
+							$num = $_POST['numeroTelefonico'.$i];
+							array_push($numerosTelefonicos, $num);
+						} else {
+							break;
+						}
+					}
+					//Llenando array de descripciones
+					$descripciones = array();
+					for ($i=1; $i < 11; $i++) {
+						if ($_POST['descripcion'.$i] != "") {
+							$descripcion = $_POST['descripcion'.$i];
+							array_push($descripciones, $descripcion);
+						} else {
+							break;
+						}
+					}
+
+					$usoDeFax = $_POST['opciones'];
+					$tipoTelefonos = $_POST['tipoTelefonos'];
+					$corrienteDeTelefonos = $_POST['corriente'];
+					$telInalambricos = $_POST['telInalambricos'];
+					
+					//Lista de marcas
+					//Llenando array de marcas
+					$marcasDeTel = array();
+					for ($i=1; $i < 11; $i++) {
+						if ($_POST['marcaTel'.$i] != "") {
+							$marca = $_POST['marcaTel'.$i];
+							array_push($marcasDeTel, $marca);
+						} else {
+							break;
+						}
+					}
+					//Llenando array de modelos
+					$modelosDeTel = array();
+					for ($i=1; $i < 11; $i++) {
+						if ($_POST['modeloTel'.$i] != "") {
+							$modelo = $_POST['modeloTel'.$i];
+							array_push($modelosDeTel, $modelo);
+						} else {
+							break;
+						}
+					}
+
+					//Las 30 extensiones
+					//Llenando array de extensiones
+					$extensiones = array();
+					for ($i=1; $i < 31; $i++) {
+						if ($_POST['extension'.$i] != "") {
+							$ext = $_POST['extension'.$i];
+							array_push($extensiones, $ext);
+						} else {
+							break;
+						}
+					}
+					//Llenando array de departamento
+					$extDepartamentos = array();
+					for ($i=1; $i < 31; $i++) {
+						if ($_POST['extDepartamento'.$i] != "") {
+							$extDep = $_POST['extDepartamento'.$i];
+							array_push($extDepartamentos, $extDep);
+						} else {
+							break;
+						}
+					}
+					//Llenando array de correos para extensiones
+					$extCorreos = array();
+					for ($i=1; $i < 31; $i++) {
+						if ($_POST['extCorreo'.$i] != "") {
+							$extCorreo = $_POST['extCorreo'.$i];
+							array_push($extCorreos, $extCorreo);
+						} else {
+							break;
+						}
+					}
+
+					$instalarTelEnPared = $_POST['extensiones'];
+					$extensionesTelDePared = $_POST['telDePared'];
+					$msjBienvenida = $_POST['bienvenida'];
+					$msjReproducir = $_POST['msjReproducir'];
+					$extPrincipal = $_POST['extPrincipal'];
+
+					//Horarios de trabajo
+					//Llenando array de los dias de trabajo
+					$diasDeTrabajo = array();
+					for ($i=1; $i < 6; $i++) {
+						if ($_POST['diasDeTrabajo'.$i] != "") {
+							$dias = $_POST['diasDeTrabajo'.$i];
+							array_push($diasDeTrabajo, $dias);
+						} else {
+							break;
+						}
+					}
+					//Llenando array de las horas de trabajo
+					$horasDeTrabajo = array();
+					for ($i=1; $i < 6; $i++) {
+						if ($_POST['horasDeTrabajo'.$i] != "") {
+							$horas = $_POST['horasDeTrabajo'.$i];
+							array_push($horasDeTrabajo, $horas);
+						} else {
+							break;
+						}
+					}
+
+					$atencionEmpresaCerrada = $_POST['atencionLlamadas'];
+					$msjContestadora = $_POST['msjContestadora'];
+					$aQueExtension = $_POST['aQueExtension'];
+
+
+					$extPrincipal = wordwrap($extPrincipal, 100, "<br />");
+					$msjContestadora = wordwrap($msjContestadora, 100, "<br />");
+					$aQueExtension = wordwrap($aQueExtension, 100, "<br />");
+					/* rompe el contenido de los textarea cada 100 caracteres después. */
+
+
+					$content = '';
+
+					$content .= '
+						<style>
+						#PDF_Container {
+							width:750px;
+						}
+						#PDF_Container h1 {
+							font-size: 26px;
+							text-align: center;
+						}
+						#PDF_Contenido {
+							margin-left: 80px;
+						}
+						#PDF_Contenido h3 {
+							font-size: 17px;
+						}
+						img {
+							margin-left: 70px;
+						}
+						table {
+						border-collapse: collapse;
+						}
+						table {
+						width: 600px;
+						margin: 0 auto;
+						background-color: #f4f4f4;
+						}
+						td {
+						padding: 10px; 
+						width: 255px;
+						word-wrap: break-word;
+						border: 1px solid #eee;
+						}
+						.tabla_triple tr td {
+							width: 170px!important;
+						}
+
+						</style>
+
+							';
+					/* Tu css */
+
+					$content .= '<div id="PDF_Container">';
+
+					$content .= '<img src="https://ingetelconnections.com/wp-content/uploads/2022/03/logo-grande.png" width="200">';
+					
+					$content .= '<br>';
+					$content .= '<h1>Cuestionario para la instalación</h1>';
+					
+					$content .= '<div id="PDF_Contenido">';
+
+					$content .= '<h3>Datos de la compañia</h3>';
+					$content .= '<table>';
+					$content .= '<tr><td><b>Nombre de la compañia</b></td><td>' . $nombreDeLaCompañia . '</td></tr>';
+					$content .= '<tr><td><b>Direccion de la compañia</b></td><td> ' . $direccionDeLaCompañia . '</td></tr>';
+					$content .= '</table>';
+					
+					$content .= '<h3>Persona de contacto</h3>';
+					$content .= '<table>';
+					$content .= '<tr><td><b>Nombre</b></td><td>' . $nombreDeContacto . '</td></tr>';
+					$content .= '<tr><td><b>Telefono</b></td><td>' . $telefonoDeContacto . '</td></tr>';
+					$content .= '<tr><td><b>Email:</b></td><td>' . $emailDeContacto . '</td></tr>';
+					$content .= '</table>';
+
+					$content .= '<h3>Proveedor de telefonia</h3>';
+					$content .= '<table>';
+					$content .= '<tr><td><b>Proveedor actual</b></td><td>' . $proveedorActual . '</td></tr>';
+					if ($enviarPorEmailFactura == "Enviare factura por Email") {
+						$content .= '<tr><td><b>Factura:</b></td><td>' . $enviarPorEmailFactura . '</td></tr>';
+					}
+					$content .= '</table>';
+
+					$content .= '<h3>¿Cuantas computadoras hay en la oficina y como estan conectadas?</h3>';
+					$content .= '<table>';
+					$content .= '<tr><td><b>Total</b></td><td>' . $cantidadDeComputadoras . '</td></tr>';
+					$content .= '<tr><td><b>Cuantas usando WiFi:</b></td><td>' . $compusUsandoWIFI . '</td></tr>';
+					$content .= '<tr><td><b>Con cable Ethernet:</b></td><td>' . $compusConCableEthernet . '</td></tr>';
+					$content .= '</table>';
+
+					//Lista de numeros con descripcion
+					$content .= '<h3>Lista de todos los números telefónicos usados y su descripción</h3>';
+					$content .= '<table>';
+					$content .= '<tr><td><b>Número telefónico</b></td> <td><b>Descripción</b></td></tr>';
+					for ($i=0; $i < count($numerosTelefonicos); $i++) { 
+						$content .= '<tr><td>' . $numerosTelefonicos[$i] . '</td> <td>' . $descripciones[$i] . '</td></tr>';
+					}
+					$content .= '</table>';
+
+					$content .= '<h3>Mas información</h3>';
+					$content .= '<table>';
+					$content .= '<tr><td><b>Su empresa necesita Fax?</b></td><td>' . $usoDeFax . '</td></tr>';
+					$content .= '<tr><td><b>Tipo de telefonos que se usan actualmente:</b></td><td>' . $tipoTelefonos . '</td></tr>';
+					if ($corrienteDeTelefonos != "") {
+						$content .= '<tr><td><b>Como es la conexion de corriente:</b></td><td> ' . $corrienteDeTelefonos . '</td></tr>';
+					}
+					if ($telInalambricos != "") {
+						$content .= '<tr><td><b>Esta usando telefonos inalambricos:</b></td><td> ' . $telInalambricos . '</td></tr>';
+					}
+					$content .= '</table>';
+
+					//Marca y modelo de los telefonos IP
+					$content .= '<h3>Marcas y Modelos de los telefonos</h3>';
+					$content .= '<table>';
+					$content .= '<tr><td><b>Marca</b></td> <td><b>Modelo</b></td></tr>';
+					for ($i=0; $i < count($marcasDeTel); $i++) { 
+						$content .= '<tr><td>' . $marcasDeTel[$i] . '</td> <td>' . $modelosDeTel[$i] . '</td></tr>';
+					}
+					$content .= '</table>';
+
+					//Extensiones
+					$content .= '<h3>Lista de extensiones numericas</h3>';
+					$content .= '<table class="tabla_triple">';
+					$content .= '<tr><td><b>Extension</b></td> <td><b>Nombre/Departamento</b></td> <td><b>Correo electronico</b></td></tr>';
+					for ($i=0; $i < count($extensiones); $i++) { 
+						$content .= '<tr><td>' . $extensiones[$i] . '</td> <td>' . $extDepartamentos[$i] . '</td> <td>' . $extCorreos[$i] . '</td></tr>';
+					}
+					$content .= '</table>';
+
+					$content .= '<h3>¿Desea instalar algún teléfono en la pared?</h3>';
+					$content .= '<table>';
+					$content .= '<tr><td><b>¿Si o no?</b></td><td>' . $instalarTelEnPared . '</td></tr>';
+					if ($extensionesTelDePared != "") {
+						$content .= '<tr><td><b>En que extensiones:</b></td><td>' . $extensionesTelDePared . '</td></tr>';
+					}
+					$content .= '</table>';
+
+					$content .= '<h3>Programación del sistema</h3>';
+					$content .= '<table>';
+					$content .= '<tr><td><b>¿Mensaje de bienvenida?</b></td><td>' . $msjBienvenida . '</td></tr>';
+					if ($msjBienvenida == "Si") {
+						$content .= '<tr><td><b>Mensaje para reproducir:</b></td><td>' . $msjReproducir . '</td></tr>';
+					}
+					$content .= '<tr><td><b>Extensiones que sonaran al llamar al numero principal</b></td><td>' . $extPrincipal . '</td></tr>';
+					$content .= '</table>';
+
+					//Horarios
+					$content .= '<h3>Horario de trabajo</h3>';
+					$content .= '<table>';
+					$content .= '<tr><td><b>Dias de la semana</b></td> <td><b>Hora:</b></td></tr>';
+					for ($i=0; $i < count($diasDeTrabajo); $i++) { 
+						$content .= '<tr><td>' . $diasDeTrabajo[$i] . '</td><td>' . $horasDeTrabajo[$i] . '</td></tr>';
+					}
+					$content .= '</table>';
+
+					$content .= '<h3>Como se atenderan las llamadas cuando este cerrado?</h3>';
+					$content .= '<table>';
+					$content .= '<tr><td><b>Asistente/correo de voz</b></td><td>' . $atencionEmpresaCerrada . '</td></tr>';
+					if ($msjContestadora != "") {
+						$content .= '<tr><td><b>Mensaje de la contestadora:</b></td><td>' . $msjContestadora . '</td></tr>';
+					}
+					if ($aQueExtension != "") {
+						$content .= '<tr><td><b>A que extension?</b></td><td>' . $aQueExtension . '</td></tr>';
+					}
+					$content .= '</table>';
+					//End
+
+					$content .= '</div>';
+
+					$content .= '</div>';
+
+					// LLmamos a la biblioteca para la creacion del PDF
+					require_once('wp-includes/html2pdf/html2pdf.class.php');
+
+					// Declaramos el formato del documento PDF
+					$html2pdf = new HTML2PDF('P', 'A4', 'fr');
+
+					$html2pdf->setDefaultFont('Arial');
+					$html2pdf->writeHTML($content, isset($_GET['vuehtml']));
+
+					$html2pdf = new HTML2PDF('P', 'A4', 'fr');
+					$html2pdf->WriteHTML($content);
+
+
+					$to = $mailto;
+					$from = $mailfrom;
+					$subject = $mailsubject;
+
+					$message = "<p>Consulte el archivo adjunto.</p>";
+					$separator = md5(time());
+					$eol = PHP_EOL;
+					$filename = "pdf-documento.pdf";
+					$pdfdoc = $html2pdf->Output('', 'S');
+					$attachment = chunk_split(base64_encode($pdfdoc));
+
+
+
+
+					$headers = "From: " . $from . $eol;
+					$headers .= "MIME-Version: 1.0" . $eol;
+					$headers .= "Content-Type: multipart/mixed; boundary=\"" . $separator . "\"" . $eol . $eol;
+
+					$body = '';
+
+					$body .= "Content-Transfer-Encoding: 7bit" . $eol;
+					$body .= "This is a MIME encoded message." . $eol; //had one more .$eol
+
+
+					$body .= "--" . $separator . $eol;
+					$body .= "Content-Type: text/html; charset=\"iso-8859-1\"" . $eol;
+					$body .= "Content-Transfer-Encoding: 8bit" . $eol . $eol;
+					$body .= $message . $eol;
+
+
+					$body .= "--" . $separator . $eol;
+					$body .= "Content-Type: application/octet-stream; name=\"" . $filename . "\"" . $eol;
+					$body .= "Content-Transfer-Encoding: base64" . $eol;
+					$body .= "Content-Disposition: attachment" . $eol . $eol;
+					$body .= $attachment . $eol;
+					$body .= "--" . $separator . "--";
+
+					if (mail($to, $subject, $body, $headers)) {
+
+						$msgsuccess = 'Email enviado Correctamente';
+					} else {
+
+						$msgerror = 'Email no ha sido enviado';
+					}
+
+				}
+			}
+		?>
